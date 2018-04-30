@@ -1,0 +1,31 @@
+ffsend
+------
+
+A ruby client to Mozilla's experimental encrypted ephemeral file-sharing service[0].
+Will lazily encrypt and decrypt files to reduce system memory usage.
+
+
+Usage
+-----
+
+First, install this gem:
+
+    gem install ffsend
+
+Usage is made as simple as:
+
+    # download file to current directory
+    ffsend 'https://send.firefox.com/download/foobar/#key'
+
+    # upload a file to Firefox Send server
+    ffsend ~/path/to/foobar
+
+
+License
+-------
+
+Code is copyright to Isaak Yansane (isikyansane@protonmail.com), and is licensed under the
+Mozilla Public License 2.0.
+
+
+[0]: https://send.firefox.com
