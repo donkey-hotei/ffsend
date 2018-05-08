@@ -15,10 +15,10 @@ First, install this gem:
 Usage is made as simple as:
 
     # download file to current directory
-    ffsend 'https://send.firefox.com/download/foobar/#key'
+    ffsend --download 'https://send.firefox.com/download/foobar/#key'
 
     # upload a file to Firefox Send server
-    ffsend ~/path/to/foobar
+    ffsend --upload ~/path/to/foobar
 
 
 License
