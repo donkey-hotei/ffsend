@@ -41,14 +41,19 @@ class FFSend
   attr_reader :file
 
   def upload_file
-    RestClient.post(
-      UPLOAD_PATH, lazy_encrypted_file,
-      {
-        "Authorization" => authorization_header,
-        "X-File-Metadata" => file_metadata_header,
-        "Content-Type" => "application/octet-stream"
-      }
-    )
+    begin
+      RestClient.post(
+        UPLOAD_PATH, lazy_encrypted_file,
+        {
+          "Authorization" => authorization_header,
+          "X-File-Metadata" => file_metadata_header,
+          "Content-Type" => "application/octet-stream",
+          "Content-Length" => lazy_encrypted_file.size
+        }
+      )
+    rescue RestClient::ExceptionWithResponse => err
+      err.response
+    end
   end
 
   def lazy_encrypted_file
@@ -116,7 +121,7 @@ class FFSend
   end
 
   def build_cipher(key, iv)
-    cipher = OpenSSL::Cipher::AES128.new(:GCM)
+    cipher = OpenSSL::Cipher.new("aes-128-gcm")
     cipher.key = key
     cipher.iv  = iv
     cipher.encrypt
