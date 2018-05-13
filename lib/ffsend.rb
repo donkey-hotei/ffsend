@@ -42,7 +42,7 @@ class FFSend
 
   def upload_file
     RestClient.post(
-      UPLOAD_PATH, lazy_file,
+      UPLOAD_PATH, lazy_encrypted_file,
       {
         "Authorization" => authorization_header,
         "X-File-Metadata" => file_metadata_header,
@@ -51,7 +51,7 @@ class FFSend
     )
   end
 
-  def lazy_file
+  def lazy_encrypted_file
     LazyEncryptedFile.new(file, file_cipher)
   end
 
@@ -76,7 +76,7 @@ class FFSend
   end
 
   def meta_cipher
-    @meta_cipher ||= build_cipher(meta_data, null_iv)
+    @meta_cipher ||= build_cipher(meta_key, null_iv)
   end
 
   def mime_type
@@ -91,16 +91,16 @@ class FFSend
           .next_bytes(16)
   end
 
-  def auth_key(password = nil)
-    @auth_key ||=
-      HKDF.new(secret, info: "authentication")
-          .next_bytes(64)
-  end
-
   def meta_key
     @meta_key ||=
       HKDF.new(secret, info: "metadata")
           .next_bytes(16)
+  end
+
+  def auth_key(password = nil)
+    @auth_key ||=
+      HKDF.new(secret, info: "authentication")
+          .next_bytes(64)
   end
 
   def secret
